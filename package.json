@@ -1,0 +1,20 @@
+{
+  "name": "jwt-dojo",
+  "version": "1.0.0",
+  "description": "Des Moines WebGeeks dojo for learning about JSON Web Tokens",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "Nate Rauh",
+  "license": "Unlicense",
+  "private": true,
+  "dependencies": {
+    "bcrypt": "^0.8.7",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "jsonwebtoken": "^7.1.7",
+    "sqlite3": "^3.1.4"
+  }
+}
