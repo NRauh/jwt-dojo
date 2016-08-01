@@ -1,9 +1,11 @@
+process.env.db = "users.db";
 const express = require("express");
 const bodyParser = require("body-parser");
+const auth = require("./controllers/auth");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const sqlite3 = require("sqlite3");
-const db = new sqlite3.Database("users.db");
+const db = new sqlite3.Database(process.env.db);
 var app = express();
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -17,66 +19,18 @@ db.serialize(() => {
 
 // Routes
 app.post("/signup", (req, res) => {
-	var usr = {
-		username: req.body.username,
-		password: req.body.password,
-		passwordConf: req.body.passconf
-	};
-
-	if (!usr.username) {
-		return res.send("Missing username\n");
-	} else if (!usr.password || !usr.passwordConf) {
-		return res.send("Missing password, or password confirmation\n");
-	} else if (usr.password !== usr.passwordConf) {
-		return res.send("Password and confirmation don't match\n");
-	}
-
-	db.get("SELECT username FROM users WHERE username == ?", [usr.username], (err, row) => {
-		if (row) {
-			return res.send("User already exists\n");
-		}
-
-		addUser(usr, () => {
-			// Here is where you will send the JWT
-			return res.send("Hi\n");
-		});
+	auth.register(req.body, (err) => {
+		return res.send(err);
 	});
-
-	function addUser(user, cb) {
-		bcrypt.genSalt(10, (err, salt) => {
-			bcrypt.hash(user.password, salt, (err, hash) => {
-				db.run("INSERT INTO users VALUES (?, ?)", [user.username, hash]);
-				return cb();
-			});
-		});
-	}
 });
 
 app.post("/login", (req, res) => {
-	var usr = {
-		username: req.body.username,
-		password: req.body.password
-	};
-
-	if (!usr.username) {
-		return res.send("Missing username\n");
-	} else if (!usr.password) {
-		return res.send("Missing password\n");
-	}
-
-	db.get("SELECT * FROM users WHERE username == ?", [usr.username], (err, row) => {
-		if (!row) {
-			return res.send("User not found\n");
+	auth.login(req.body, (err, jwt) => {
+		if (err) {
+			return res.send(err);
 		}
 
-		bcrypt.compare(usr.password, row.pass, (err, success) => {
-			if (!success) {
-				return res.send("Wrong password\n");
-			}
-
-			// Here's where you will send a JWT
-			return res.send("Hello\n");
-		});
+		return res.send(jwt);
 	});
 });
 

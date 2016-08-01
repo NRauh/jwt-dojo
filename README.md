@@ -19,6 +19,7 @@ The `jsonwebtoken` package will also install and is already included in `index.j
 
 To emphesize the simplicity and statelessness of JWTs, none of the endpoints require a browser.
 You can use curl to test the endpoints yourself.
+Otherwise you can run npm test (requires mocha), and take a look at the unit tests.
 
 ##Final Note
 If you would like to use (some of) this code as a starting point for a project, just be sure to change the DB from sqlite and you'll probably want to split this up into multiple files.

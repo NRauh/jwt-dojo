@@ -4,7 +4,7 @@
   "description": "Des Moines WebGeeks dojo for learning about JSON Web Tokens",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": "node index.js"
   },
   "author": "Nate Rauh",
@@ -16,5 +16,9 @@
     "express": "^4.14.0",
     "jsonwebtoken": "^7.1.7",
     "sqlite3": "^3.1.4"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.0.0"
   }
 }
