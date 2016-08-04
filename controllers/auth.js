@@ -22,6 +22,7 @@ module.exports = {
 			bcrypt.genSalt(10, (err, salt) => {
 				bcrypt.hash(body.password, salt, (err, hash) => {
 					db.run("INSERT INTO users VALUES (?, ?)", [body.username, hash], (err) => {
+						// Issue JWT here
 						return cb(undefined, "Good");
 					});
 				});
@@ -46,6 +47,7 @@ module.exports = {
 				if (!success) {
 					return cb("Wrong password");
 				}
+				// Issue JWT here
 				return cb(undefined, "Good");
 			});
 		});

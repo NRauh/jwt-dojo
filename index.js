@@ -35,6 +35,7 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/secure", (req, res) => {
+	// Decode JWT here
 	return res.send("Hello World");
 });
 
