@@ -19,8 +19,12 @@ db.serialize(() => {
 
 // Routes
 app.post("/signup", (req, res) => {
-	auth.register(req.body, (err) => {
-		return res.send(err);
+	auth.register(req.body, (err, jwt) => {
+		if (err) {
+			return res.send(err);
+		}
+
+		return res.send(jwt);
 	});
 });
 
