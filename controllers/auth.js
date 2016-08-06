@@ -1,6 +1,18 @@
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const sqlite3 = require("sqlite3");
 var db = new sqlite3.Database(process.env.db);
+
+/*
+I'm making this a stand alone function because
+this is the only place JWTs will be issued, and
+there is no need to make this a middlware
+*/
+function issueJwt(data, cb) {
+	jwt.sign(data, "SuperSecretPassword", {expiresIn: "1 day"}, (err, token) => {
+		return cb(token);
+	});
+}
 
 module.exports = {
 	register: function(body, cb) {
@@ -22,8 +34,10 @@ module.exports = {
 			bcrypt.genSalt(10, (err, salt) => {
 				bcrypt.hash(body.password, salt, (err, hash) => {
 					db.run("INSERT INTO users VALUES (?, ?)", [body.username, hash], (err) => {
-						// Issue JWT here
-						return cb(undefined, "Good");
+						// JWT issued here
+						issueJwt({usr: body.username}, (token) => {
+							return cb(undefined, token);
+						});
 					});
 				});
 			});
@@ -47,8 +61,10 @@ module.exports = {
 				if (!success) {
 					return cb("Wrong password");
 				}
-				// Issue JWT here
-				return cb(undefined, "Good");
+				// JWT issued here
+				issueJwt({usr: body.username}, (token) => {
+					return cb(undefined, token);
+				});
 			});
 		});
 	}
